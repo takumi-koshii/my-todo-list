@@ -66,7 +66,7 @@ json_data_user2 = json.dumps({
     "name": USERNAME,
     "password": PASSWORD2,
 })
-body = post_response(user_url, 404, json_data_user2)
+body = post_response(user_url, 400, json_data_user2)
 assert 'msg' in body, "message does not exist"
 assert body['msg'] == "user already registered", ASSERT_MESSAGE
 

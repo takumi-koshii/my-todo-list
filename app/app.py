@@ -82,7 +82,7 @@ def post_user(
     password = request.password
     user_already_registered = db.query(TodoListUser).filter(TodoListUser.name == name).first()
     if user_already_registered is not None:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
                             content=jsonable_encoder({"msg": "user already registered"}))
 
     salted = password + SALT
