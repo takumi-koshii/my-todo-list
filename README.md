@@ -3,6 +3,9 @@
 ## 概要
 
 ユーザーごとに Todo リスト項目の操作が可能な API です。AWS 環境へのデプロイを容易にするため、 App 部分は Python で実装し、 DB 部分には MySQL を使用しています。
+  
+![mytodolist](https://github.com/user-attachments/assets/1e4671f7-94fb-424e-ac03-d489b685988f)
+
 
 ## Todo リスト API の使い方
 
