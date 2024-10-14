@@ -62,7 +62,7 @@ async def handler(request: Request, exc: RequestValidationError):
 
 # ユーザー
 
-# ユーザー ID 取得
+# ユーザー取得
 @app.get("/user")
 def get_user(
         request: UserRequest,
@@ -70,7 +70,12 @@ def get_user(
     name = request.name
     password = request.password
     user_id = get_user_id(name, password, db)
-    return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder({"user_id": user_id}))
+    if user_id == INVALID_USER_ID:
+        user = TodoListUser(id=INVALID_USER_ID)
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=jsonable_encoder(user))
+    else:
+        user = db.query(TodoListUser).filter(TodoListUser.id == user_id).first()
+        return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder(user))
 
 
 # ユーザー登録
@@ -93,7 +98,7 @@ def post_user(
     )
     db.add(new_user)
     db.commit()
-    return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder({"user_id": new_user.id}))
+    return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder({"id": new_user.id}))
 
 
 # ユーザー更新
@@ -105,7 +110,7 @@ def put_user(
     old_password = request.password
     user_id = get_user_id(name, old_password, db)
     if user_id == INVALID_USER_ID:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=jsonable_encoder({"user_id": user_id}))
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=jsonable_encoder({"id": user_id}))
 
     user = db.query(TodoListUser).filter(TodoListUser.id == user_id).first()
     if request.new_name:
@@ -116,7 +121,7 @@ def put_user(
         user.password = hashed
 
     db.commit()
-    return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder({"user_id": user_id}))
+    return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder({"id": user_id}))
 
 
 # ユーザー削除
@@ -128,14 +133,14 @@ def delete_user(
     password = request.password
     user_id = get_user_id(name, password, db)
     if user_id == INVALID_USER_ID:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=jsonable_encoder({"user_id": user_id}))
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=jsonable_encoder({"id": user_id}))
 
     items = db.query(TodoListItem).filter(TodoListItem.id == user_id)
     items.delete()
     users = db.query(TodoListUser).filter(TodoListUser.id == user_id)
     users.delete()
     db.commit()
-    return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder({"user_id": user_id}))
+    return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder({"id": user_id}))
 
 
 # アイテム
@@ -173,7 +178,7 @@ def post_item(
     db.add(item)
     db.commit()
     return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder({"user_id": user_id,
-                                                                                  "item_id": item.id}))
+                                                                                  "id": item.id}))
 
 
 # Todo リストのアイテムを更新
@@ -191,13 +196,13 @@ def put_item(
         TodoListItem.id == item_id).first()
     if item is None:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=jsonable_encoder({"user_id": user_id,
-                                                                                             "item_id": item_id}))
+                                                                                             "id": item_id}))
 
     item.content = request.content
     item.deadline = request.deadline
     db.commit()
     return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder({"user_id": user_id,
-                                                                                  "item_id": item_id}))
+                                                                                  "id": item_id}))
 
 
 # Todo リストのアイテムを削除
@@ -215,4 +220,4 @@ def delete_item(
     items.delete()
     db.commit()
     return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder({"user_id": user_id,
-                                                                                  "item_id": item_id}))
+                                                                                  "id": item_id}))

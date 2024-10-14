@@ -57,8 +57,8 @@ requests.delete(user_url, headers=HEADERS, data=json_data_user).json()
 
 # ユーザーを作成するテスト
 body = post_response(user_url, 200, json_data_user)
-assert 'user_id' in body, ASSERT_MESSAGE
-user_id = body['user_id']  # 以降のテストのために user_id を覚えておく
+assert 'id' in body, ASSERT_MESSAGE
+user_id = body['id']  # 以降のテストのために user_id を覚えておく
 
 # ユーザー名の重複
 PASSWORD2 = sha256(("a" + SALT).encode()).hexdigest()
@@ -76,19 +76,19 @@ json_data_user_invalid = json.dumps({
     "name": USERNAME_INVALID,
     "password": PASSWORD,
 })
-body = get_response(user_url, 200, json_data_user_invalid)
-assert 'user_id' in body, ASSERT_MESSAGE
-assert body['user_id'] == -1, ASSERT_MESSAGE
+body = get_response(user_url, 404, json_data_user_invalid)
+assert 'id' in body, ASSERT_MESSAGE
+assert body['id'] == -1, ASSERT_MESSAGE
 
 # パスワード誤り
-body = get_response(user_url, 200, json_data_user2)
-assert 'user_id' in body, ASSERT_MESSAGE
-assert body['user_id'] == -1, ASSERT_MESSAGE
+body = get_response(user_url, 404, json_data_user2)
+assert 'id' in body, ASSERT_MESSAGE
+assert body['id'] == -1, ASSERT_MESSAGE
 
 # ユーザー ID 取得
 body = get_response(user_url, 200, json_data_user)
-assert 'user_id' in body, ASSERT_MESSAGE
-assert body['user_id'] == user_id, ASSERT_MESSAGE
+assert 'id' in body, ASSERT_MESSAGE
+assert body['id'] == user_id, ASSERT_MESSAGE
 
 # ユーザー更新
 json_data_user_put = json.dumps({
@@ -97,8 +97,8 @@ json_data_user_put = json.dumps({
     "new_password": PASSWORD2,
 })
 body = put_response(user_url, 200, json_data_user_put)
-assert 'user_id' in body, ASSERT_MESSAGE
-assert body['user_id'] == user_id, ASSERT_MESSAGE
+assert 'id' in body, ASSERT_MESSAGE
+assert body['id'] == user_id, ASSERT_MESSAGE
 
 # ユーザー更新（戻す）
 json_data_user_put2 = json.dumps({
@@ -107,8 +107,8 @@ json_data_user_put2 = json.dumps({
     "new_password": PASSWORD,
 })
 body = put_response(user_url, 200, json_data_user_put2)
-assert 'user_id' in body, ASSERT_MESSAGE
-assert body['user_id'] == user_id, ASSERT_MESSAGE
+assert 'id' in body, ASSERT_MESSAGE
+assert body['id'] == user_id, ASSERT_MESSAGE
 
 # 存在しないユーザーに対してアイテムの GET リクエストを出す
 USER_ID_INVALID = 999999
@@ -128,9 +128,9 @@ json_data_item = json.dumps({
 })
 body = post_response(item_url_get_post, 200, json_data_item)
 assert 'user_id' in body, ASSERT_MESSAGE
-assert 'item_id' in body, ASSERT_MESSAGE
+assert 'id' in body, ASSERT_MESSAGE
 assert body['user_id'] == user_id, ASSERT_MESSAGE
-item_id = body['item_id']  # 以降のテストのために item_id を覚えておく
+item_id = body['id']  # 以降のテストのために item_id を覚えておく
 
 # アイテムの存在チェック
 body = get_response(item_url_get_post, 200)
@@ -159,9 +159,9 @@ json_data_item2 = json.dumps({
 })
 body = put_response(item_url_put_delete, 200, json_data_item2)
 assert 'user_id' in body, ASSERT_MESSAGE
-assert 'item_id' in body, ASSERT_MESSAGE
+assert 'id' in body, ASSERT_MESSAGE
 assert body['user_id'] == user_id, ASSERT_MESSAGE
-assert body['item_id'] == item_id, ASSERT_MESSAGE
+assert body['id'] == item_id, ASSERT_MESSAGE
 
 # 登録されているアイテムの取得
 item_url_get_specifically = request_base_url() + f"/item/{user_id}?item_id={item_id}"
@@ -173,11 +173,11 @@ assert body['list'][0]['content'] == "bbb", ASSERT_MESSAGE
 # 項目の削除
 body = delete_response(item_url_put_delete, 200)
 assert 'user_id' in body, ASSERT_MESSAGE
-assert 'item_id' in body, ASSERT_MESSAGE
+assert 'id' in body, ASSERT_MESSAGE
 assert body['user_id'] == user_id, ASSERT_MESSAGE
-assert body['item_id'] == item_id, ASSERT_MESSAGE
+assert body['id'] == item_id, ASSERT_MESSAGE
 
 # ユーザーの削除
 body = delete_response(user_url, 200, json_data_user)
-assert 'user_id' in body, ASSERT_MESSAGE
-assert body['user_id'] == user_id, ASSERT_MESSAGE
+assert 'id' in body, ASSERT_MESSAGE
+assert body['id'] == user_id, ASSERT_MESSAGE
