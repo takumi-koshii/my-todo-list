@@ -71,7 +71,9 @@ RESPONSE:
         "password": "パスワード",
         "created_at": "作成日時",
         "updated_at": "更新日時"
-    },
+    }
+},
+{
     "status_code": 404,
     "content": {
         "id": -1,
