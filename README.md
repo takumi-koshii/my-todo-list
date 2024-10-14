@@ -153,6 +153,7 @@ HEADER: Content-Type: application/json
 REQUEST:  
 ``` json
 {
+    "title": "Todo リストアイテムのタイトル"
     "content": "Todo リストアイテムの内容",
     "deadline": "〆切日"
 }
@@ -177,7 +178,7 @@ RESPONSE:
 指定されたユーザー ID の Todo リストにアイテムを追加します。ユーザー ID が見つからないとき 404 エラーとなります。
 
 ### Todo リストのアイテムの取得
-URI: \<baseurl\>/item/{user_id}?item_id={item_id}  
+URI: \<baseurl\>/item/{user_id}?[item_id={item_id}][search={search}]  
 METHOD: GET  
 RESPONSE:
 ``` json
@@ -188,6 +189,7 @@ RESPONSE:
             {
                 "id": "アイテム ID",
                 "user_id": "ユーザー ID",
+                "title": "Todo リストアイテムのタイトル",
                 "content": "Todo リストアイテムの内容",
                 "deadline": "〆切日",
                 "created_at": "作成日時",
@@ -198,7 +200,7 @@ RESPONSE:
 }
 ```
 
-指定されたユーザー ID の Todo リストのアイテム一覧を取得します。 URI で item_id を指定すると特定の item_id の情報のみ取得します。
+指定されたユーザー ID の Todo リストのアイテム一覧を取得します。 item_id を指定すると特定の item_id の情報のみ取得します。 search を指定するとそれがタイトルに含まれるアイテムのみ取得します。
 
 ### Todo リストのアイテムの更新
 URI: \<baseurl\>/item/{user_id}/{item_id}  
@@ -207,6 +209,7 @@ HEADER: Content-Type: application/json
 REQUEST:  
 ``` json
 {
+    "title": "Todo リストアイテムのタイトル",
     "content": "Todo リストアイテムの内容",
     "deadline": "〆切日"
 }
