@@ -6,6 +6,7 @@ CREATE TABLE todolistitem
 (
   id SERIAL PRIMARY KEY,
   user_id INT,
+  title VARCHAR(64),
   content VARCHAR(1024),
   deadline DATE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

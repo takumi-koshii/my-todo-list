@@ -123,7 +123,7 @@ assert len(body['list']) == 0, "result should be empty"
 
 # アイテムを登録
 json_data_item = json.dumps({
-    "content": "aaa",
+    "title": "aaa",
     "deadline": "2024-12-31"
 })
 body = post_response(item_url_get_post, 200, json_data_item)
@@ -136,14 +136,26 @@ item_id = body['id']  # 以降のテストのために item_id を覚えてお�
 body = get_response(item_url_get_post, 200)
 assert len(body['list']) > 0, "result is empty"
 assert body['list'][0]['id'] == item_id, ASSERT_MESSAGE
-assert body['list'][0]['content'] == "aaa", ASSERT_MESSAGE
+assert body['list'][0]['title'] == "aaa", ASSERT_MESSAGE
 
 # 登録されているアイテムの取得
 item_url_get_specifically = request_base_url() + f"/item/{user_id}?item_id={item_id}"
 body = get_response(item_url_get_specifically, 200)
 assert len(body['list']) > 0, "list is empty"
 assert body['list'][0]['id'] == item_id, ASSERT_MESSAGE
-assert body['list'][0]['content'] == "aaa", ASSERT_MESSAGE
+assert body['list'][0]['title'] == "aaa", ASSERT_MESSAGE
+
+# アイテムの検索
+item_url_get_specifically = request_base_url() + f"/item/{user_id}?search=a"
+body = get_response(item_url_get_specifically, 200)
+assert len(body['list']) > 0, "list is empty"
+assert body['list'][0]['id'] == item_id, ASSERT_MESSAGE
+assert body['list'][0]['title'] == "aaa", ASSERT_MESSAGE
+
+# アイテムの検索（見つからない）
+item_url_get_specifically = request_base_url() + f"/item/{user_id}?search=b"
+body = get_response(item_url_get_specifically, 200)
+assert len(body['list']) == 0, "list should be empty"
 
 # 登録されていないアイテムを取得しようとする
 ITEM_ID_INVALID = 999999
@@ -154,7 +166,7 @@ assert len(body['list']) == 0, "list should be empty"
 # アイテムの更新
 item_url_put_delete = request_base_url() + f"/item/{user_id}/{item_id}"
 json_data_item2 = json.dumps({
-    "content": "bbb",
+    "title": "bbb",
     "deadline": "2025-1-31"
 })
 body = put_response(item_url_put_delete, 200, json_data_item2)
@@ -168,7 +180,7 @@ item_url_get_specifically = request_base_url() + f"/item/{user_id}?item_id={item
 body = get_response(item_url_get_specifically, 200)
 assert len(body['list']) > 0, "list is empty"
 assert body['list'][0]['id'] == item_id, ASSERT_MESSAGE
-assert body['list'][0]['content'] == "bbb", ASSERT_MESSAGE
+assert body['list'][0]['title'] == "bbb", ASSERT_MESSAGE
 
 # 項目の削除
 body = delete_response(item_url_put_delete, 200)

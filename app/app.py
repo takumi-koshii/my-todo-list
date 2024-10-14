@@ -18,8 +18,9 @@ class UserRequest(BaseModel):
 
 
 class ItemRequest(BaseModel):
-    content: str = Query(..., max_length=1024)
-    deadline: str = Query(..., max_length=16)
+    title: str = Query(..., max_length=64)
+    content: str = Query(None, max_length=1024)
+    deadline: str = Query(None, max_length=16)
 
 
 def session():
@@ -150,12 +151,17 @@ def delete_user(
 def get_item(
         user_id: int,
         item_id: int = None,
+        search: str = Query(None, max_length=64),
         db: Session = Depends(session)):
-    if item_id is None:
-        result_set = db.query(TodoListItem).filter(TodoListItem.user_id == user_id).all()
-    else:
+    if item_id:
         result_set = db.query(TodoListItem).filter(TodoListItem.user_id == user_id).filter(
             TodoListItem.id == item_id).all()
+    else:
+        result_set = db.query(TodoListItem).filter(TodoListItem.user_id == user_id).all()
+
+    if search:
+        result_set = list(filter(lambda x: search.lower() in x.title.lower(), result_set))
+
     response_body = jsonable_encoder({"list": result_set})
     return JSONResponse(status_code=status.HTTP_200_OK, content=response_body)
 
@@ -172,6 +178,7 @@ def post_item(
 
     item = TodoListItem(
         user_id=user_id,
+        title=request.title,
         content=request.content,
         deadline=request.deadline
     )
@@ -197,7 +204,7 @@ def put_item(
     if item is None:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=jsonable_encoder({"user_id": user_id,
                                                                                              "id": item_id}))
-
+    item.title = request.title
     item.content = request.content
     item.deadline = request.deadline
     db.commit()

@@ -21,7 +21,8 @@ class TodoListItem(Base):
     __tablename__ = "todolistitem"
     id = Column(Integer, primary_key=True, nullable=False)
     user_id = Column(Integer, nullable=False)
+    title = Column(String(64), nullable=False)
     content = Column(String(1024), nullable=True)
-    deadline = Column(Date)
+    deadline = Column(Date, nullable=True)
     created_at = Column(TIMESTAMP, FetchedValue())
     updated_at = Column(TIMESTAMP, FetchedValue())
