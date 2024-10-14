@@ -246,4 +246,16 @@ RESPONSE:
 
 指定されたユーザー ID の Todo リストのアイテムを更新します。ユーザーが見つからないとき 404 エラーとなります。
 
+## テスト
 
+uvicorn でアプリを起動してください。
+``` bash
+$ cd app
+$ uvicorn app:app --reload
+```
+
+test.py を実行してください。
+``` bash
+$ cd test
+$ python test.py
+```
