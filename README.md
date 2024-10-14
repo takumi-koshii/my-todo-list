@@ -207,6 +207,7 @@ REQUEST:
     "content": "Todo リストアイテムの内容",
     "deadline": "〆切日"
 }
+```
 RESPONSE:
 ``` json
 {
