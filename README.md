@@ -177,7 +177,7 @@ RESPONSE:
 
 指定されたユーザー ID の Todo リストにアイテムを追加します。ユーザー ID が見つからないとき 404 エラーとなります。
 
-### Todo リストのアイテムの取得
+### Todo リストのアイテムの取得・検索
 URI: \<baseurl\>/item/{user_id}?[item_id={item_id}][search={search}]  
 METHOD: GET  
 RESPONSE:
